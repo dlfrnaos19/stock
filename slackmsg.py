@@ -1,5 +1,17 @@
-from slacker import Slacker
-slack = Slacker('xoxb-341411373331-856655856231-e6wtlNsuv384K9fjtaIS7WiL')
+import os
+import json
+import requests
+with open(os.path.join(os.getcwd(),'info.json'),'r',encoding='utf-8') as f:
+    info = json.load(f)
+ 
+def post_message(text):
+    token = info['slacktoken']
+    channel = info['channel_name']
+    response = requests.post("https://slack.com/api/chat.postMessage",
+        headers={"Authorization": "Bearer "+token},
+        data={"channel": channel,"text": text}
+    )
+    print(response)
 
 markdown_text = '''
 This message is plain.
@@ -9,7 +21,7 @@ _This message is italic._
 ~This message is strike.~
 '''
 
-attach_dict = {
+attach_dict = [{
     'color'      :'#ff0000',
     'author_name':'INVESTAR',
     "author_link":'github.com/investar',
@@ -17,7 +29,4 @@ attach_dict = {
     'title_link' :'http://finance.naver.com/sise/sise_index.nhn?code=KOSPI',
     'text'       :'2,326.13 △11.89 (+0.51%)',
     'image_url'  :'ssl.pstatic.net/imgstock/chart3/day/KOSPI.png'
-}
-
-attach_list = [attach_dict]
-slack.chat.post_message(channel="#general", text=markdown_text, attachments=attach_list)
+}]
